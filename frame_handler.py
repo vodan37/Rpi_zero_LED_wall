@@ -129,43 +129,30 @@ class Extrusion(Handler):
             while(True):
                 rand = random.randint(0,89)
                 if(self.matrix[rand][0]):
-                    if(self.mode == "Forward"):
-                        self.matrix[rand][0] = False
-                    else:
-                        self.matrix[rand][0] = True
+                    self.matrix[rand][0] = False
                     self.matrix[rand][2] = current_time
                     break
 
         for i in range(90):
-            if (self.mode == "Forward"):
-                if (self.matrix[i][0]):
-                    self.frame[i] = self.backgroud
+            if (self.matrix[i][0]):
+                self.frame[i] = self.backgroud
+            else:
+                if (current_time <= (self.matrix[i][2]+self.speed_in_ms)):
+                    self.frame[i] = get_fade_color(self.backgroud, self.color, self.matrix[i][2], self.speed_in_ms, current_time)
                 else:
-                    if (current_time <= (self.matrix[i][2]+self.speed_in_ms)):
-                        self.frame[i] = get_fade_color(self.backgroud, self.color, self.matrix[i][2], self.speed_in_ms, current_time)
-                    else:
-                        self.frame[i] = self.color
-
-            if (self.mode == "Back"):
-                if (not(self.matrix[i][0])):
-                    self.frame[i] = self.backgroud
-                else:
-                    if (current_time <= (self.matrix[i][2]+self.speed_in_ms)):
-                        self.frame[i] = get_fade_color(self.backgroud, self.color, self.matrix[i][2], self.speed_in_ms, current_time)
-                    else:
-                        self.frame[i] = self.color
+                    self.frame[i] = self.color
 
 
         if (self.mode == "Forward" ):
             for i in range(self.w*self.h):
-                if ((self.matrix[i][0]) == True):
+                if ((self.matrix[i][0]) == False):
                     self.counter= self.counter +1
             if (self.counter == 90):
                 self.mode = "Back"
                 self.counter = 0
                 self.backgroud, self.color = self.color, self.backgroud
                 for i in range(self.w*self.h):
-                    self.matrix[i][0] = False
+                    self.matrix[i][0] = True
             else:
                 self.counter = 0
 
