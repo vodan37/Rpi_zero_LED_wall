@@ -129,7 +129,10 @@ class Extrusion(Handler):
             while(True):
                 rand = random.randint(0,89)
                 if(self.matrix[rand][0]):
-                    self.matrix[rand][0] = False
+                    if(self.mode == "Forward"):
+                        self.matrix[rand][0] = False
+                    else:
+                        self.matrix[rand][0] = True
                     self.matrix[rand][2] = current_time
                     break
 
@@ -158,14 +161,14 @@ class Extrusion(Handler):
 
         if (self.mode == "Back"):
             for i in range(self.w*self.h):
-                if ((self.matrix[i][0]) == True):
+                if ((self.matrix[i][0]) == False):
                     self.counter= self.counter +1
             if (self.counter == 90):
                 self.mode = "Forward"
                 self.counter = 0
                 self.backgroud, self.color = self.color, self.backgroud
                 for i in range(self.w*self.h):
-                    self.matrix[i][0] = True
+                    self.matrix[i][0] = False
             else:
                 self.counter = 0
 
