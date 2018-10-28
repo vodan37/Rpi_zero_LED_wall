@@ -12,6 +12,25 @@ def get_fade_color(start_color, destination_color, start_time, speed_in_ms, curr
                         /(end_time-start_time)*(current_time-start_time)))
     return (start_color+adding_color)
 
+def normalize(pic):
+    l = len(pic)
+    frame = [ rgb( 0, 0, 0 ) for x in range( l ) ]
+    for i in range(l):
+        if ((pic[i].r) >= 255):
+            frame[i].r = 255
+        else:
+            frame[i].r = pic[i].r
+
+        if ((pic[i].g) >= 255):
+            frame[i].g = 255
+        else:
+            frame[i].g = pic[i].g
+
+        if ((pic[i].b) >= 255):
+            frame[i].b = 255
+        else:
+            frame[i].b = pic[i].b
+    return (frame)
 
 class Handler:
     def next_frame(self, current_time):
@@ -86,7 +105,7 @@ class Random_pixels(Handler):
                     self.frame[i] = get_fade_color(self.color, self.backgroud, (self.matrix[i][2]+self.speed_in_ms), self.speed_in_ms, current_time)
 
 
-        return (self.frame)
+        return (normalize(self.frame))
 
 
 class Extrusion(Handler):
@@ -150,7 +169,7 @@ class Extrusion(Handler):
             else:
                 self.counter = 0
 
-        return (self.frame)
+        return (normalize(self.frame))
 
 
 
