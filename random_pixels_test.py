@@ -34,6 +34,8 @@ if __name__ == '__main__':
     for i in range( 0, strip.numPixels(), 1):                                     # iterate over all LEDs
         strip.setPixelColor( i, Color( 0, 0, 0 ) )                                # set LED to black (off)
 
+    pic = [ Color(0,0,0) for x  in range(6*15)]
+
     handler = Random_pixels(6, 15, rgb(100,100,100), rgb(100,250,100), 3000)
     last_time = get_time_in_ms()
 
@@ -43,7 +45,9 @@ if __name__ == '__main__':
         if ((current_time - last_time) > 16):
             last_time = current_time
 
-            pic = handler.next_frame(current_time)
+            frame = handler.next_frame(current_time)
+            for i in range (6*15):
+                pic[i] = Color(frame[i].r, frame[i].g, frame[i].b)
 
             for i in range( 0, strip.numPixels(), 1 ):                                # iterate over all LEDs
                 strip.setPixelColor(                                                  # set pixel to color in picture

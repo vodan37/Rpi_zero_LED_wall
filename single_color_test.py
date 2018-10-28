@@ -36,18 +36,21 @@ if __name__ == '__main__':
 
     pic = [ Color(0,0,0) for x  in range(6*15)]
 
-    handler = Extrusion(6, 15, rgb(100,100,100), rgb(100,250,100), 3000)
+    handler = Single_color_handler(6, 15, rgb(100,100,100))
     last_time = get_time_in_ms()
+
+
 
     while True:
         current_time = get_time_in_ms()
 
         if ((current_time - last_time) > 16):
             last_time = current_time
-
             frame = handler.next_frame(current_time)
+
             for i in range (6*15):
                 pic[i] = Color(frame[i].r, frame[i].g, frame[i].b)
+
 
             for i in range( 0, strip.numPixels(), 1 ):                                # iterate over all LEDs
                 strip.setPixelColor(                                                  # set pixel to color in picture
