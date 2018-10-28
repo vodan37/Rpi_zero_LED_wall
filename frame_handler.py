@@ -104,6 +104,9 @@ class Random_pixels(Handler):
                 else:
                     self.frame[i] = get_fade_color(self.color, self.backgroud, (self.matrix[i][2]+self.speed_in_ms), self.speed_in_ms, current_time)
 
+            if(current_time > self.matrix[i][2]):
+                self.matrix[i][0] = True
+
 
         return (normalize(self.frame))
 
