@@ -158,14 +158,14 @@ class Extrusion(Handler):
 
         if (self.mode == "Back"):
             for i in range(self.w*self.h):
-                if ((self.matrix[i][0]) == False):
+                if ((self.matrix[i][0]) == True):
                     self.counter= self.counter +1
             if (self.counter == 90):
-                self.mode = "Back"
+                self.mode = "Forward"
                 self.counter = 0
                 self.backgroud, self.color = self.color, self.backgroud
                 for i in range(self.w*self.h):
-                    self.matrix[i][0] = False
+                    self.matrix[i][0] = True
             else:
                 self.counter = 0
 
