@@ -186,27 +186,26 @@ class Rain(Handler):
         self.h = h
         self.backgroud = background
         self.color = color
-        self.fall_time = fall_time
-        self.speed = fall_time / h * trace_length
-        self.fall_speed = fall_time / h
+        self.fall_time = fall_time  #5000
+        self.speed = int(fall_time / h * trace_length)  #1333
+        self.fall_speed = int(fall_time / h)    #333
         self.trace_length = trace_length
         self.matrix = []
         self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
         self.period = int((fall_time/90)*(1.5+random.uniform(0,1)))
+        self.last_time = get_time_in_ms()
         self.free_columns = [True for x in range(w)]
-        for i in range(h):
+
+        for i in range(h):  # [str][col][[is_free,color,start_time]]
             self.matrix.append([])
             for j in range(w):
                 self.matrix[i].append([True, background, 0])
 
 
-
-
-
     def next_frame(self, current_time):
         if (current_time >= self.last_time + self.period):
             self.last_time = current_time
-            while(True):    #negerate nex fall for rand col
+            while(True):    #generate next fall for rand col
                 rand = random.randint(0,5)
                 if(self.free_columns[rand]):
                     self.matrix[0][rand][0] = False     # [str][col][[is_free,color,start_time]]
@@ -217,9 +216,17 @@ class Rain(Handler):
         for str in range(self.h):
             for col in range(self.w):
                 if (self.matrix[str][col][0]):
-                    self.matrix[str][0][1] = self.backgroud
+                    self.matrix[str][col][1] = self.backgroud
                 else:
-                    if(current_time < (self.matrix[str][col][2]+self.speed)): # making trace
+                    # making fall
+                    if(current_time < (self.matrix[str][col][2]+self.fall_speed)):  #333
+                        if (str < (len(self.matrix)-1)):
+                            self.matrix[str+1][col][0] = False
+                            self.matrix[str+1][col][2] = current_time
+                            self.matrix[str+1][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
+
+                    # making trace
+                    if(current_time < (self.matrix[str][col][2]+self.speed)):   #1333
                         self.matrix[str][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
 
                     else:
@@ -227,13 +234,6 @@ class Rain(Handler):
                         self.matrix[str][col][0] = True
                         if (str == 0):  #next fall
                             self.free_columns[col] = True
-
-
-                    if(current_time < (self.matrix[str][col][2]+self.fall_speed)): # making fall
-                        if (str < 15):
-                            self.matrix[str+1][col][0] = False
-                            self.matrix[str+1][col][2] = current_time
-                            self.matrix[str+1][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
 
 
         self.frame =[]
