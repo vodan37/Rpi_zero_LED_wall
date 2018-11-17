@@ -205,6 +205,7 @@ class Rain(Handler):
     def next_frame(self, current_time):
         if (current_time >= self.last_time + self.period):
             self.last_time = current_time
+            self.period = int((self.fall_time/90)*(1.5+random.uniform(0,1)))
             while(True):    #generate next fall for rand col
                 rand = random.randint(0,5)
                 if(self.free_columns[rand]):
@@ -224,6 +225,11 @@ class Rain(Handler):
                             self.matrix[str+1][col][0] = False
                             self.matrix[str+1][col][2] = current_time
                             self.matrix[str+1][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
+                        if (str > 0):
+                            if (self.matrix[str][col][2] == current_time):
+                                self.matrix[str+1][col][0] = True
+                                self.matrix[str+1][col][1] = self.backgroud
+
 
                     # making trace
                     if(current_time < (self.matrix[str][col][2]+self.speed)):   #1333
