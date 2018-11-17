@@ -10,6 +10,10 @@ def get_fade_color(start_color, destination_color, start_time, speed_in_ms, curr
     end_time = start_time+speed_in_ms
     adding_color = round(((rgb(destination_color.r - start_color.r, destination_color.g - start_color.g, destination_color.b - start_color.b))
                         /(end_time-start_time)*(current_time-start_time)))
+
+    if (current_time > (start_time+speed_in_ms)):
+        return (destination_color)
+
     return (start_color+adding_color)
 
 def normalize(pic):
@@ -101,7 +105,7 @@ class Random_pixels(Handler):
             else:
                 if (current_time <= (self.matrix[i][2]+(self.speed_in_ms))):
                     self.frame[i] = get_fade_color(self.backgroud, self.color, self.matrix[i][2], self.speed_in_ms, current_time)
-                if (current_time <= (self.matrix[i][2]+(2*self.speed_in_ms))):
+                elif (current_time <= (self.matrix[i][2]+(2*self.speed_in_ms))):
                     self.frame[i] = get_fade_color(self.color, self.backgroud, (self.matrix[i][2]+self.speed_in_ms), self.speed_in_ms, current_time)
 
             if(current_time > (self.matrix[i][2]+(2*self.speed_in_ms))):
@@ -119,7 +123,7 @@ class Extrusion(Handler):
         self.backgroud = background
         self.color = color
         self.speed_in_ms = speed_in_ms
-        self.matrix = [[True, background, 0] for x in range(w * h)]
+        self.matrix = [[True, background, 0] for x in range(w * h)]     #[pixel_is_free, backgroun_color, time_start_fading]
         self.last_time = get_time_in_ms()
         self.period = int(speed_in_ms/2.0)
         self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
@@ -174,6 +178,75 @@ class Extrusion(Handler):
                 self.counter = 0
 
         return (normalize(self.frame))
+
+
+class Rain(Handler):
+    def __init__(self, w, h, color, background, fall_time, trace_length):
+        self.w = w
+        self.h = h
+        self.backgroud = background
+        self.color = color
+        self.fall_time = fall_time
+        self.speed = fall_time / h * trace_length
+        self.fall_speed = fall_time / h
+        self.trace_length = trace_length
+        self.matrix = []
+        self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
+        self.period = int((fall_time/90)*(1.5+random.uniform(0,1)))
+        self.free_columns = [True for x in range(w)]
+        for i in range(h):
+            self.matrix.append([])
+            for j in range(w):
+                self.matrix[i].append([True, background, 0])
+
+
+
+
+
+    def next_frame(self, current_time):
+        if (current_time >= self.last_time + self.period):
+            self.last_time = current_time
+            while(True):    #negerate nex fall for rand col
+                rand = random.randint(0,5)
+                if(self.free_columns[rand]):
+                    self.matrix[0][rand][0] = False     # [str][col][[is_free,color,start_time]]
+                    self.free_columns[rand] = False
+                    self.matrix[0][rand][2] = current_time
+                    break
+
+        for str in range(self.h):
+            for col in range(self.w):
+                if (self.matrix[str][col][0]):
+                    self.matrix[str][0][1] = self.backgroud
+                else:
+                    if(current_time < (self.matrix[str][col][2]+self.speed)): # making trace
+                        self.matrix[str][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
+
+                    else:
+                        self.matrix[str][col][1] = self.backgroud
+                        self.matrix[str][col][0] = True
+                        if (str == 0):  #next fall
+                            self.free_columns[col] = True
+
+
+                    if(current_time < (self.matrix[str][col][2]+self.fall_speed)): # making fall
+                        if (str < 15):
+                            self.matrix[str+1][col][0] = False
+                            self.matrix[str+1][col][2] = current_time
+                            self.matrix[str+1][col][1] = get_fade_color(self.color, self.backgroud, self.matrix[str][col][2], self.speed, current_time)
+
+
+        self.frame =[]
+
+        for col in range(self.w):
+            for str in range(self.h):
+                self.frame.append(self.matrix[str][col][1])
+
+        return (self.frame)
+
+
+
+
 
 
 
