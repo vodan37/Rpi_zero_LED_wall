@@ -181,7 +181,7 @@ class Extrusion(Handler):
 
 
 class Rain(Handler):
-    def __init__(self, w, h, color, background, fall_time, trace_length):
+    def __init__(self, w, h, color, background, trace_length, fall_time):
         self.w = w
         self.h = h
         self.backgroud = background
@@ -205,7 +205,7 @@ class Rain(Handler):
     def next_frame(self, current_time):
         if (current_time >= self.last_time + self.period):
             self.last_time = current_time
-            self.period = int((self.fall_time/90)*(3.0+random.uniform(0,1)))
+            self.period = int((self.fall_time/90)*(7.0+random.uniform(0,1)))
             while(True):    #generate next fall for rand col
                 rand = random.randint(0,5)
                 if(self.free_columns[rand]):
@@ -248,7 +248,65 @@ class Rain(Handler):
 
         return (self.frame)
 
+class Tetris(Handler):
+    def __init__(self, w, h, color, background, fall_time):
+        self.w = w
+        self.h = h
+        self.backgroud = background
+        self.color = color
+        self.fall_time = fall_time  #5000
+        self.fall_speed = int(fall_time / h)    #333
+        self.matrix = []
+        self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
+        self.period = int((fall_time/90)*(3.0+random.uniform(0,1)))
+        self.last_time = get_time_in_ms()
+        self.columns = [h for x in range(w)]
 
+        for i in range(h):  # [str][col][[is_free, color,start_time]]
+            self.matrix.append([])
+            for j in range(w):
+                self.matrix[i].append([True, background, 0])
+
+
+    def next_frame(self, current_time):
+        if (current_time >= self.last_time + self.period):
+            self.last_time = current_time
+            self.period = int((self.fall_time/90)*(15.0+random.uniform(0,1)))
+            while(True):    #generate next fall for rand col
+                rand = random.randint(0,5)
+                if(self.matrix[0][rand][0]):
+                    self.matrix[0][rand][0] = False     # [str][col][[is_free,color,start_time]]
+                    self.columns[rand] = self.columns[rand] + 1
+                    self.matrix[0][rand][2] = current_time+1
+                    break
+
+        for str in range(self.h):
+            for col in range(self.w):
+                if (self.matrix[str][col][0]):
+                    self.matrix[str][col][1] = self.backgroud
+
+                else:
+                    if(current_time < (self.matrix[str][col][2]+self.fall_speed)):  #333
+                        self.matrix[str][col][0] = False
+                        self.matrix[str][col][1] = self.color
+                    else:
+                        self.matrix[str][col][1] = self.backgroud
+                        self.matrix[str][col][0] = True
+                        #time to fall
+                        if ((str < 14)and(self.matrix[str+1][col][0])):
+                            self.matrix[str+1][col][0] = False
+                            self.matrix[str+1][col][1] = self.color
+                            self.matrix[str+1][col][2] = current_time+1
+
+
+
+        self.frame = []
+
+        for col in range(self.w):
+            for str in range(self.h):
+                self.frame.append(self.matrix[str][col][1])
+
+        return (self.frame)
 
 
 
