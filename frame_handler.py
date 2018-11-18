@@ -276,7 +276,6 @@ class Tetris(Handler):
                 rand = random.randint(0,5)
                 if(self.matrix[0][rand][0]):
                     self.matrix[0][rand][0] = False     # [str][col][[is_free,color,start_time]]
-                    self.columns[rand] = self.columns[rand] + 1
                     self.matrix[0][rand][2] = current_time+1
                     break
 
@@ -290,13 +289,19 @@ class Tetris(Handler):
                         self.matrix[str][col][0] = False
                         self.matrix[str][col][1] = self.color
                     else:
-                        self.matrix[str][col][1] = self.backgroud
-                        self.matrix[str][col][0] = True
-                        #time to fall
-                        if ((str < 14)and(self.matrix[str+1][col][0])):
-                            self.matrix[str+1][col][0] = False
-                            self.matrix[str+1][col][1] = self.color
-                            self.matrix[str+1][col][2] = current_time+1
+                        if (str < self.columns[col]):
+                            self.matrix[str][col][1] = self.backgroud
+                            self.matrix[str][col][0] = True
+                            #time to fall
+                            if ((str < 14)and(self.matrix[str+1][col][0])):
+                                self.matrix[str+1][col][0] = False
+                                self.matrix[str+1][col][1] = self.color
+                                self.matrix[str+1][col][2] = current_time+1
+                        else:
+                            self.columns[col] = self.columns[col] - 1
+                            self.matrix[str][col][0] = False
+                            self.matrix[str][col][1] = self.color
+
 
 
 
