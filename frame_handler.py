@@ -289,22 +289,21 @@ class Tetris(Handler):
                         self.matrix[str][col][0] = False
                         self.matrix[str][col][1] = self.color
                     else:
-                        if (str < 14):
-                            if (str < self.columns[col]):
+                        if ((str == 14) or not(self.matrix[str+1][col][0])):
+                            self.matrix[str][col][0] = False
+                            self.matrix[str][col][1] = self.color
+                            self.matrix[str][col][2] = current_time + 1
+                            if(str < 14):
                                 self.matrix[str+1][col][0] = False
                                 self.matrix[str+1][col][1] = self.color
-                                self.matrix[str+1][col][2] = current_time+1
-                                self.matrix[str][col][1] = self.backgroud
-                                self.matrix[str][col][0] = True
-                            else:
-                                self.matrix[str+1][col][0] = False
-                                self.matrix[str+1][col][1] = self.color
-                                self.matrix[str+1][col][2] = current_time+1
-                                self.matrix[str][col][0] = False
-                                self.matrix[str][col][1] = self.color
-                                self.matrix[str][col][2] = current_time+1
-                                self.columns[col] = self.columns[col] + 1
+                                self.matrix[str+1][col][2] = current_time + 1
 
+                        else:
+                            self.matrix[str][col][0] = True
+                            self.matrix[str][col][1] = self.backgroud
+                            self.matrix[str+1][col][0] = False
+                            self.matrix[str+1][col][1] = self.color
+                            self.matrix[str+1][col][2] = current_time + 1
 
         self.frame = []
 
