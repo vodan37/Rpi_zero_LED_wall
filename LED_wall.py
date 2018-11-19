@@ -3,7 +3,7 @@ import time
 from frame_handler import *
 import math
 import colorsys
-from vrtneopixel import *
+from neopixel import *
 
 # LED strip configuration:
 LED_COUNT = 90      # Number of LED pixels.
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     while True:
         line = ser.readline().decode("utf-8")
         if (len(line) > 0):
+            print("line")
             if(line[0]=="1"):     #single color
                 handler = Single_color_handler(LED_W, LED_H, rgb(line[1:4], line[4:7], line[7:10]))
 
