@@ -259,7 +259,7 @@ class Tetris(Handler):
         self.matrix = []
         self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
         self.period = int((fall_time/90)*(3.0+random.uniform(0,1)))
-        self.clear_period = self.period * 8
+        self.clear_period = self.period * 12
         self.last_time = get_time_in_ms()
         self.last_clear_time = get_time_in_ms()
         self.columns = [0 for x in range(w)]
@@ -313,7 +313,7 @@ class Tetris(Handler):
                     self.columns[col] = self.columns[col] + 1
 
         if (max(self.columns) > 4):
-            self.clear_period = self.period * 6
+            self.clear_period = self.period * 8
             if (max(self.columns) > 7):
                 self.clear_period = self.period * 4
         else:
@@ -321,7 +321,7 @@ class Tetris(Handler):
 
         if (current_time >= self.last_clear_time + self.clear_period):
             self.last_clear_time = current_time
-            self.clear_period = self.period * 8
+            self.clear_period = self.period * 12
             self.matrix = self.matrix[:-1]
             self.matrix.insert(0, [[True, self.backgroud, 0] for x in range(self.w)])
 
