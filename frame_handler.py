@@ -319,19 +319,11 @@ class Tetris(Handler):
         else:
             self.clear_period = self.period * 8
 
-
-
         if (current_time >= self.last_clear_time + self.clear_period):
             self.last_clear_time = current_time
             self.clear_period = self.period * 8
-            for str in range(self.h):
-                for col in range(self.w):
-                    if(str > 0):
-                        self.matrix[str][col][0] = self.matrix[str-1][col][0]
-                        self.matrix[str][col][1] = self.matrix[str-1][col][1]
-                        self.matrix[str][col][2] = self.matrix[str-1][col][2]
-
-
+            self.matrix = self.matrix[:-1]
+            self.matrix.insert(0, [[True, self.backgroud, 0] for x in range(self.w)])
 
         self.frame = []
 
