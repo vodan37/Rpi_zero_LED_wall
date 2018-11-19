@@ -1,6 +1,7 @@
 import time
 import random
 from rgb import *
+from abc import ABCMeta, abstractmethod
 
 def get_time_in_ms():
     return (int(round(time.time() * 1000)))
@@ -38,7 +39,10 @@ def normalize(pic):
 
 class Handler:
     def next_frame(self, current_time):
-        pass;
+        __metaclass__ = ABCMeta
+        @abstractmethod
+        def next_frame(self, current_time):
+            pass
 
 
 class Single_color_handler(Handler):
@@ -258,7 +262,7 @@ class Tetris(Handler):
         self.fall_speed = int(fall_time / h)    #333
         self.matrix = []
         self.frame = [ rgb( background.r, background.g, background.b ) for x in range( w * h ) ]
-        self.period = int((fall_time/90)*(3.0+random.uniform(0,1)))
+        self.period = int((fall_time/90)*(15.0+random.uniform(0,1)))
         self.clear_period = self.period * 12
         self.last_time = get_time_in_ms()
         self.last_clear_time = get_time_in_ms()
