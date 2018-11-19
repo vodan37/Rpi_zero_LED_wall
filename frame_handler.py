@@ -10,32 +10,13 @@ def get_time_in_ms():
 def get_fade_color(start_color, destination_color, start_time, speed_in_ms, current_time):
     end_time = start_time+speed_in_ms
     adding_color = round(((rgb(destination_color.r - start_color.r, destination_color.g - start_color.g, destination_color.b - start_color.b))
-                        /(end_time-start_time)*(current_time-start_time)))
+                        /(float(end_time)-float(start_time))*(float(current_time)-float(start_time))))
 
     if (current_time > (start_time+speed_in_ms)):
         return (destination_color)
 
     return (start_color+adding_color)
 
-def normalize(pic):
-    l = len(pic)
-    frame = [ rgb( 0, 0, 0 ) for x in range( l ) ]
-    for i in range(l):
-        if ((pic[i].r) >= 255):
-            frame[i].r = 255
-        else:
-            frame[i].r = pic[i].r
-
-        if ((pic[i].g) >= 255):
-            frame[i].g = 255
-        else:
-            frame[i].g = pic[i].g
-
-        if ((pic[i].b) >= 255):
-            frame[i].b = 255
-        else:
-            frame[i].b = pic[i].b
-    return (frame)
 
 class Handler:
     def next_frame(self, current_time):
@@ -116,7 +97,7 @@ class Random_pixels(Handler):
                 self.matrix[i][0] = True
 
 
-        return (normalize(self.frame))
+        return (self.frame)
 
 
 class Extrusion(Handler):
@@ -181,7 +162,7 @@ class Extrusion(Handler):
             else:
                 self.counter = 0
 
-        return (normalize(self.frame))
+        return (self.frame)
 
 
 class Rain(Handler):
