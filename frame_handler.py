@@ -8,9 +8,9 @@ def get_time_in_ms():
 
 
 def get_fade_color(start_color, destination_color, start_time, speed_in_ms, current_time):
-    end_time = start_time+speed_in_ms
+    end_time = int(start_time)+int(speed_in_ms)
     adding_color = round(((rgb(destination_color.r - start_color.r, destination_color.g - start_color.g, destination_color.b - start_color.b))
-                        /(float(end_time)-float(start_time))*(float(current_time)-float(start_time))))
+                        /(int(end_time) - int(start_time))*(int(current_time) - int(start_time))))
 
     if (current_time > (start_time+speed_in_ms)):
         return (destination_color)

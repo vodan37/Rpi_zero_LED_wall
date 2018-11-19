@@ -1,8 +1,8 @@
 class rgb:
     def __init__(self, red, green, blue):
-        # red = float(red)
-        # green = float(green)
-        # blue = float(blue)
+        red = float(red)
+        green = float(green)
+        blue = float(blue)
         # if(red > 255):
         #     red = 255
         # if (red < 0):
